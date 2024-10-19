@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"netLog/db"
 	"netLog/models"
@@ -16,12 +17,27 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(visitors)
 }
 
+func checkIpAddress(ip string) bool {
+	if net.ParseIP(ip) == nil {
+		log.Fatalf("IP Address: %s - Invalid\n", ip)
+		return false
+	} else {
+		fmt.Printf("IP Address: %s - Valid\n", ip)
+		return true
+	}
+}
+
 // https://ipinfo.io/${ip}?token=${process.env.IPINFO_API_KEY}
 func AddNewVisitor(w http.ResponseWriter, r *http.Request) {
 
+	remoteIp := "152.59.2.94"
+	if !checkIpAddress(remoteIp) {
+		log.Fatal("the ip is not valid")
+	}
+
 	ipInfoKey := os.Getenv("IP_INFO_KEY")
 
-	url := fmt.Sprintf("https://ipinfo.io/%s?token="+ipInfoKey, r.RemoteAddr)
+	url := fmt.Sprintf("https://ipinfo.io/%s?token="+ipInfoKey, remoteIp)
 	fmt.Println(url)
 	response, err := http.Get(url)
 	if err != nil {
@@ -29,7 +45,7 @@ func AddNewVisitor(w http.ResponseWriter, r *http.Request) {
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		log.Fatalf("Error: received status code %d", response.StatusCode)
+		log.Fatalf("Error: calling ipinfo api", response)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
