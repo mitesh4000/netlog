@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"netLog/db"
 	"netLog/routes"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -23,7 +24,8 @@ func main() {
 
 	defer db.CloseDB()
 
-	log.Println("Server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+	log.Println("Server started on " + port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 
 }
