@@ -25,7 +25,6 @@ WORKDIR /app
 
 # Copy the binary from the builder stage
 COPY .env ./
-COPY mydatabase.db ./
 COPY --from=builder /app/bin/netlog .
 
 # Set environment variable
