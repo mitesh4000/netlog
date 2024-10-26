@@ -7,8 +7,8 @@ import (
 
 func SetupRoutes() {
 
-    http.HandleFunc("/", controller.HelloHandler)
-    http.HandleFunc("/new-visitor", controller.AddNewVisitor)
-    http.HandleFunc("/log", controller.GetUsers)
+	http.HandleFunc("/", controller.HelloHandler)
+	http.HandleFunc("/new-visitor", controller.AddNewVisitor)
+	http.HandleFunc("/log", controller.GetUsers)
 
 }

@@ -1,0 +1,72 @@
+package db
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+
+	_ "modernc.org/sqlite"
+)
+
+var DB *sql.DB
+
+type IPData struct {
+	ID       int
+	IP       string
+	City     string
+	Region   string
+	Country  string
+	Loc      string
+	Org      string
+	Postal   string
+	Timezone string
+}
+
+func InitDb(DataSource string) {
+	var err error
+	DB, err = sql.Open("sqlite", DataSource)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err = DB.Ping(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func CloseDB() {
+	if err := DB.Close(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func setupDatabase() {
+
+	// Open a database connection
+	db, err := sql.Open("sqlite", "./visitors.db")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
+
+	// Create a table based on the Visitor struct
+	createTableStmt := `
+                CREATE TABLE IF NOT EXISTS visitors (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        ip TEXT NOT NULL,
+                        city TEXT,
+                        region TEXT,
+                        country TEXT,
+                        loc TEXT,
+                        org TEXT,
+                        postal TEXT,
+                        timezone TEXT
+                )`
+	_, err = db.Exec(createTableStmt)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+}

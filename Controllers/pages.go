@@ -3,10 +3,8 @@ package controller
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"netLog/db"
-	"strconv"
 )
 
 type PageData struct {
@@ -19,7 +17,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 
 	totalVisitors, err := db.GetTotalVisitors()
 	if err != nil {
-		log.Fatal("unable to count total visiters")
+		fmt.Println("unable to count total visiters")
 	}
 
 	tmpl := template.Must(template.ParseFiles("./index.html"))
@@ -42,40 +40,44 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
-
-	totalVisitors, err := db.GetTotalVisitors()
-	if err != nil {
-		log.Fatal("unable to count total visiters")
-	}
-	tmpl := `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{.Title}}</title>
-  </head>
-  <body>
-    <h1>{{.Heading}}</h1>
-    <p>{{.Message}}</p>
-	<h6>hi man</h6>
-  </body>
-</html>`
-
-	t, err := template.New("hello").Parse(tmpl)
-	if err != nil {
-		http.Error(w, "Unable to load template", http.StatusInternalServerError)
-		return
-	}
-
-	data := PageData{
-		Title:   "Server status",
-		Heading: "yo server is up and running",
-		Message: "Total " + strconv.Itoa(totalVisitors) + " visitors till date",
-	}
-
-	err = t.Execute(w, data)
-	if err != nil {
-		http.Error(w, "Unable to render template", http.StatusInternalServerError)
-	}
+	fmt.Fprintf(w, "<h1>Server is running successfully</h1>")
 }
+
+// func HelloHandler(w http.ResponseWriter, r *http.Request) {
+
+// 	totalVisitors, err := db.GetTotalVisitors()
+// 	if err != nil {
+// 		log.Fatal("unable to count total visiters")
+// 	}
+// 	tmpl := `
+// <!DOCTYPE html>
+// <html lang="en">
+//   <head>
+//     <meta charset="UTF-8" />
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+//     <title>{{.Title}}</title>
+//   </head>
+//   <body>
+//     <h1>{{.Heading}}</h1>
+//     <p>{{.Message}}</p>
+// 	<h6>hi man</h6>
+//   </body>
+// </html>`
+
+// 	t, err := template.New("hello").Parse(tmpl)
+// 	if err != nil {
+// 		http.Error(w, "Unable to load template", http.StatusInternalServerError)
+// 		return
+// 	}
+
+// 	data := PageData{
+// 		Title:   "Server status",
+// 		Heading: "yo server is up and running",
+// 		Message: "Total " + strconv.Itoa(totalVisitors) + " visitors till date",
+// 	}
+
+// 	err = t.Execute(w, data)
+// 	if err != nil {
+// 		http.Error(w, "Unable to render template", http.StatusInternalServerError)
+// 	}
+// }
